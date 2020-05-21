@@ -1,0 +1,16 @@
+.game-board{
+	display: flex;
+	flex-wrap: wrap;
+	width: 60vw;
+	min-width: 200px;
+	height: 600px;
+	background-color: grey;
+	padding: auto;
+}
+
+@media screen and (max-width: 720px) {
+	.game-board {
+	  background-color: lightgreen;
+	  width: 80vw;
+	}
+  }
