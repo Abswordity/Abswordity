@@ -1,16 +1,23 @@
 import React from 'react';
 import logo from './logo.svg';
+import {GameBoard} from './Components/GameBoard/index'
 import './App.css';
 
+const fetchUsers = () => { fetch('http://localhost:1000/peoples')
+.then(response => response.json())
+.then(users => {
+  console.log({users})
+})
+}
 function App() {
+fetchUsers()
   return (
     <div className="App">
       <header className="App-header">
          <p>
           Get ready to embrace your inner Abswordity!
         </p>
-        <img src="https://raw.githubusercontent.com/tzip25/wordy-frontend/master/site/favicon3.png" className="App-logo" alt="logo" />
-        
+        <GameBoard/>
       </header>
     </div>
   );
