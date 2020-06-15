@@ -1,0 +1,12 @@
+12 tiles
+
+8 tiles 
+
+TileWidth = 2m + tile
+TotalWidth = TileWidth * 12tiles
+
+
+100% = 12(TileWidth) + 24 m
+
+
+8.333 = TileWidth + 2 m
