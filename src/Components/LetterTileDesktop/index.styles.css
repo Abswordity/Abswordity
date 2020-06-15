@@ -7,3 +7,13 @@
     margin: 12%;
     border-radius: 20%;
 }
+
+.letter-tile-selected {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: inherit; 
+	background-color: green;
+    margin: 12%;
+    border-radius: 20%;
+}

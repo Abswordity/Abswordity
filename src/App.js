@@ -11,13 +11,14 @@ const fetchUsers = () => { fetch('http://localhost:1000/users')
 }
 function App() {
 fetchUsers()
+const sampleWord = ["h", "e", "l", "l"]
   return (
     <div className="App">
       <header className="App-header">
          <p>
           Get ready to embrace your inner Abswordity!
         </p>
-        <GameBoardDesktop/>
+        <GameBoardDesktop sampleWord={sampleWord}/>
       </header>
     </div>
   );
