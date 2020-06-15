@@ -1,0 +1,12 @@
+.game-board{
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-auto-rows: 12.5%;
+	width: 60vw;
+	min-width: 600px;
+	min-height: 400px;
+	height: 40vw;
+	background-color: grey;
+	padding: 1%;
+	border-radius: 1%;
+}
