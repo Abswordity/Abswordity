@@ -7,8 +7,8 @@ export class Input extends Component {
 
     render() {
         return (
-            <div>
-                <input value={this.props.word} onChange={this.props.changeHandler} />
+            <div className="input-field-container">
+                <input spellcheck="false" value={this.props.word} onChange={this.props.changeHandler} className="input-field" />
             </div>
         )
     }

@@ -1,0 +1,25 @@
+.input-field-container{
+    width: 60vw;
+	min-width: 600px;
+    background-color: #f9f9f9;
+    padding: 1%;
+    margin-top: 5%;
+    border-radius:1vw;
+}
+
+.input-field{
+	background-color: #f9f9f9;
+    width: 98%;
+    font-size: 50px;
+    border-radius:1vw;
+    color: #173F5F;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
+
+.input-field:focus{
+    outline: none;  
+}
+
