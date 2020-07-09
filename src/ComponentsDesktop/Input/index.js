@@ -6,9 +6,16 @@ import './index.styles.css'
 export class Input extends Component {
 
     render() {
+        const { changeHandler, gameInPlay, submitHandler, word } = this.props;
         return (
             <div className="input-field-container">
-                <input spellcheck="false" value={this.props.word} onChange={this.props.changeHandler} className="input-field" />
+                <form onSubmit={(e) => {
+                    e.preventDefault()
+                    submitHandler()
+                }}
+                >
+                    <input spellcheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay} />
+                </form>
             </div>
         )
     }

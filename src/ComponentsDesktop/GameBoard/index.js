@@ -11,7 +11,8 @@ export class GameBoard extends Component {
 		super(props);
 		this.state = {
 			displayLetters: [],
-			inputWord: ''
+			inputWord: '',
+			gameInPlay: true
 		};
 	}
 
@@ -34,14 +35,18 @@ export class GameBoard extends Component {
 
 	letterAdditionInterval = () => {
 		const interval = setInterval(() => {
+
 			const { displayLetters } = this.state;
 			if (displayLetters.length > 59) {
 				clearInterval(interval)
+				this.setState({
+					gameInPlay: false
+				})
 			}
 			else {
 				this.pushToDisplayLetters()
 			}
-		}, 100)
+		}, 500)
 	}
 
 	deriveLetterCountObject = (word) => {
@@ -106,8 +111,21 @@ export class GameBoard extends Component {
 
 	}
 
-	render() {
+
+	wordInputSubmitHandler = () => {
 		const { displayLetters } = this.state;
+		const nonHighlightedLetters = displayLetters.filter((letterObject) => {
+			return !letterObject.selected
+		})
+		this.setState({
+			displayLetters: nonHighlightedLetters,
+			inputWord: ''
+		})
+	}
+
+
+	render() {
+		const { displayLetters, gameInPlay } = this.state;
 		return (
 			<div>
 				<div className="game-board">
@@ -115,7 +133,7 @@ export class GameBoard extends Component {
 						return <LetterTile key={index} letter={letter.letter} selected={letter.selected} />
 					})}
 				</div>
-				<Input changeHandler={this.wordInputChangeHandler} word={this.state.inputWord} />
+				<Input changeHandler={this.wordInputChangeHandler} submitHandler={this.wordInputSubmitHandler} word={this.state.inputWord} gameInPlay={gameInPlay} />
 			</div>
 		)
 	}
