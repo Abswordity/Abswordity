@@ -4,7 +4,7 @@
 	align-items: center;
 	position: inherit; 
 	background-color: #173F5F;
-    margin: 12%;
+    margin: 10%;
     border-radius: 20%;
 }
 
@@ -14,9 +14,9 @@
 	align-items: center;
 	position: inherit; 
 	background-color: #ED553B;
-    margin: 12%;
+    margin: 10%;
 	border-radius: 20%;
-	transform: rotate(35deg);
+	transform: rotate(30deg);
 }
 
 .letter-tile-miami {
