@@ -35,7 +35,7 @@ export class GameBoard extends Component {
 	letterAdditionInterval = () => {
 		const interval = setInterval(() => {
 			const { displayLetters } = this.state;
-			if (displayLetters.length > 95) {
+			if (displayLetters.length > 59) {
 				clearInterval(interval)
 			}
 			else {
