@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { LetterTile } from '../LetterTile/index';
 import { Input } from '../Input/index';
+import { PlayButton } from '../PlayButton/index'
 import './index.styles.css'
 
 const lettersArray = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 't', 't', 't', 't', 't', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 's', 's', 's', 's', 's', 's', 'l', 'l', 'l', 'l', 'l', 'c', 'c', 'c', 'c', 'c', 'u', 'u', 'u', 'u', 'd', 'd', 'd', 'p', 'p', 'p', 'm', 'm', 'm', 'h', 'h', 'h', 'g', 'g', 'b', 'b', 'f', 'f', 'y', 'y', 'w', 'k', 'v', 'x', 'z', 'j', 'q'];
@@ -12,16 +13,25 @@ export class GameBoard extends Component {
 		this.state = {
 			displayLetters: [],
 			inputWord: '',
-			gameInPlay: true
+			gameInPlay: false,
 		};
 	}
 
-	componentDidMount = () => {
-		this.letterAdditionInterval();
-	}
 
 	componentWillUnmount = () => {
 		clearInterval(this.letterAdditionInterval);
+	}
+
+	playButtonClickHandler = () => {
+		this.setState({
+			displayLetters: [],
+			inputWord: '',
+			gameInPlay: true
+		})
+
+		setTimeout(() => {
+			this.letterAdditionInterval();
+		}, 0)
 	}
 
 	pushToDisplayLetters = () => {
@@ -34,19 +44,22 @@ export class GameBoard extends Component {
 
 
 	letterAdditionInterval = () => {
-		const interval = setInterval(() => {
+		const { gameInPlay } = this.state;
+		if (gameInPlay) {
+			const interval = setInterval(() => {
 
-			const { displayLetters } = this.state;
-			if (displayLetters.length > 59) {
-				clearInterval(interval)
-				this.setState({
-					gameInPlay: false
-				})
-			}
-			else {
-				this.pushToDisplayLetters()
-			}
-		}, 500)
+				const { displayLetters } = this.state;
+				if (displayLetters.length > 59) {
+					clearInterval(interval)
+					this.setState({
+						gameInPlay: false
+					})
+				}
+				else {
+					this.pushToDisplayLetters()
+				}
+			}, 100)
+		}
 	}
 
 	deriveLetterCountObject = (word) => {
@@ -128,6 +141,10 @@ export class GameBoard extends Component {
 		const { displayLetters, gameInPlay } = this.state;
 		return (
 			<div>
+				{!gameInPlay &&
+					<div>
+						< PlayButton clickHandler={this.playButtonClickHandler} />
+					</div>}
 				<div className="game-board">
 					{displayLetters.map((letter, index) => {
 						return <LetterTile key={index} letter={letter.letter} selected={letter.selected} />
