@@ -14,7 +14,7 @@ export class Input extends Component {
                     submitHandler()
                 }}
                 >
-                    <input spellcheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay} />
+                    <input spellcheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay} ref={input => input && gameInPlay && input.focus()} />
                 </form>
             </div>
         )
