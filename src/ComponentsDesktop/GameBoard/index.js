@@ -3,7 +3,10 @@ import { LetterTile } from '../LetterTile/index';
 import { Input } from '../Input/index';
 import { PlayButton } from '../PlayButton/index';
 import './index.styles.css';
-import inDictionary from '../../Dictionary.js'
+import dictionaryRegex from '../../DictionaryRegex.js'
+import sounds from '../../sounds'
+
+const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound } = sounds;
 
 const lettersArray = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 't', 't', 't', 't', 't', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 's', 's', 's', 's', 's', 's', 'l', 'l', 'l', 'l', 'l', 'c', 'c', 'c', 'c', 'c', 'u', 'u', 'u', 'u', 'd', 'd', 'd', 'p', 'p', 'p', 'm', 'm', 'm', 'h', 'h', 'h', 'g', 'g', 'b', 'b', 'f', 'f', 'y', 'y', 'w', 'k', 'v', 'x', 'z', 'j', 'q'];
 
@@ -18,10 +21,14 @@ export class GameBoard extends Component {
 		};
 	}
 
+	componentDidMount = () => {
+		dictionaryRegex.test('yeet')
+		dictionaryRegex.test('play')
+		dictionaryRegex.test('ball')
+	}
 
 	componentWillUnmount = () => {
 		clearInterval(this.letterAdditionInterval);
-		console.log({ inDictionary })
 	}
 
 	playButtonClickHandler = () => {
@@ -44,7 +51,6 @@ export class GameBoard extends Component {
 		this.setState({ displayLetters: newDisplayLetters })
 	}
 
-
 	letterAdditionInterval = () => {
 		const { gameInPlay } = this.state;
 		if (gameInPlay) {
@@ -52,6 +58,7 @@ export class GameBoard extends Component {
 
 				const { displayLetters } = this.state;
 				if (displayLetters.length > 59) {
+					gameOverSound()
 					clearInterval(interval)
 					this.setState({
 						gameInPlay: false
@@ -60,7 +67,7 @@ export class GameBoard extends Component {
 				else {
 					this.pushToDisplayLetters()
 				}
-			}, 100)
+			}, 1000)
 		}
 	}
 
@@ -80,6 +87,7 @@ export class GameBoard extends Component {
 
 	highlightProperTiles = (word) => {
 		if (this.validInput(word) || !word.length) {
+			tileSound()
 			const countObject = this.deriveLetterCountObject(word);
 			const { displayLetters } = this.state;
 			const resetDisplayLetters = displayLetters.map((letter) => {
@@ -93,6 +101,8 @@ export class GameBoard extends Component {
 				}
 				return letterObject
 			})
+		} else {
+			invalidTileSound()
 		}
 	}
 
@@ -126,17 +136,20 @@ export class GameBoard extends Component {
 
 	}
 
-
 	wordInputSubmitHandler = () => {
 		const { displayLetters, inputWord } = this.state;
 		const nonHighlightedLetters = displayLetters.filter((letterObject) => {
 			return !letterObject.selected
 		})
-		if (inDictionary(inputWord)) {
+		if (dictionaryRegex.test(inputWord)) {
+			wordSound()
 			this.setState({
 				displayLetters: nonHighlightedLetters,
 				inputWord: ''
 			})
+		}
+		else {
+			invalidWordSound()
 		}
 	}
 
