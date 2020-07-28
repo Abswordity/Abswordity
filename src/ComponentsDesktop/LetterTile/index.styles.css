@@ -5,7 +5,8 @@
 	position: inherit; 
 	background-color: #173F5F;
     margin: 10%;
-    border-radius: 20%;
+	border-radius: 20%;
+	color: white;
 }
 
 .letter-tile-selected {
@@ -17,6 +18,7 @@
     margin: 10%;
 	border-radius: 20%;
 	transform: rotate(30deg);
+	color: white;
 }
 
 .letter-tile-miami {
