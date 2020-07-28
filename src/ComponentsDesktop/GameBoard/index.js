@@ -3,10 +3,11 @@ import { LetterTile } from '../LetterTile/index';
 import { Input } from '../Input/index';
 import { PlayButton } from '../PlayButton/index';
 import './index.styles.css';
-import dictionaryRegex from '../../DictionaryRegex.js'
-import sounds from '../../sounds'
+import dictionaryRegex from '../../DictionaryRegex.js';
+import sounds from '../../sounds';
+import { HeartDisplay } from '../HeartDisplay/index'
 
-const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound } = sounds;
+const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound } = sounds;
 
 const lettersArray = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 't', 't', 't', 't', 't', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 's', 's', 's', 's', 's', 's', 'l', 'l', 'l', 'l', 'l', 'c', 'c', 'c', 'c', 'c', 'u', 'u', 'u', 'u', 'd', 'd', 'd', 'p', 'p', 'p', 'm', 'm', 'm', 'h', 'h', 'h', 'g', 'g', 'b', 'b', 'f', 'f', 'y', 'y', 'w', 'k', 'v', 'x', 'z', 'j', 'q'];
 
@@ -18,6 +19,7 @@ export class GameBoard extends Component {
 			displayLetters: [],
 			inputWord: '',
 			gameInPlay: false,
+			hearts: 3
 		};
 	}
 
@@ -35,7 +37,8 @@ export class GameBoard extends Component {
 		this.setState({
 			displayLetters: [],
 			inputWord: '',
-			gameInPlay: true
+			gameInPlay: true,
+			hearts: 3
 		})
 
 		setTimeout(() => {
@@ -67,7 +70,7 @@ export class GameBoard extends Component {
 				else {
 					this.pushToDisplayLetters()
 				}
-			}, 1000)
+			}, 100)
 		}
 	}
 
@@ -85,7 +88,7 @@ export class GameBoard extends Component {
 		return countObject
 	}
 
-	highlightProperTiles = (word) => {
+	highlightProperTiles = (word, keyPressed) => {
 		if (this.validInput(word) || !word.length) {
 			tileSound()
 			const countObject = this.deriveLetterCountObject(word);
@@ -102,12 +105,18 @@ export class GameBoard extends Component {
 				return letterObject
 			})
 		} else {
-			invalidTileSound()
+			if (keyPressed === " ") {
+				this.explodeHeart()
+			} else {
+				invalidTileSound()
+			}
 		}
 	}
 
 	wordInputChangeHandler = (event) => {
-		const displayLetters = this.highlightProperTiles(event.target.value)
+		const { nativeEvent: { data } } = event;
+		const displayLetters = this.highlightProperTiles(event.target.value, data)
+
 		if (displayLetters) {
 			this.setState({
 				inputWord: event.target.value,
@@ -153,21 +162,38 @@ export class GameBoard extends Component {
 		}
 	}
 
+	explodeHeart = () => {
+		const { gameInPlay, hearts } = this.state;
+		if (gameInPlay && hearts) {
+			heartSound()
+			let newHeartCount = hearts - 1
+
+			this.setState({
+				displayLetters: [],
+				hearts: newHeartCount
+			})
+		}
+
+	}
+
 	render() {
-		const { displayLetters, gameInPlay } = this.state;
+		const { displayLetters, gameInPlay, hearts } = this.state;
 		return (
-			<div>
-				{!gameInPlay &&
-					<div>
-						< PlayButton clickHandler={this.playButtonClickHandler} />
-					</div>}
-				<div className="game-board">
-					{displayLetters.map((letter, index) => {
-						return <LetterTile key={index} letter={letter.letter} selected={letter.selected} />
-					})}
+			<>
+				<div>
+					<HeartDisplay hearts={hearts} />
+					{!gameInPlay &&
+						<div>
+							< PlayButton clickHandler={this.playButtonClickHandler} />
+						</div>}
+					<div className="game-board">
+						{displayLetters.map((letter, index) => {
+							return <LetterTile key={index} letter={letter.letter} selected={letter.selected} />
+						})}
+					</div>
+					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={this.state.inputWord} gameInPlay={gameInPlay} />
 				</div>
-				<Input changeHandler={this.wordInputChangeHandler} submitHandler={this.wordInputSubmitHandler} word={this.state.inputWord} gameInPlay={gameInPlay} />
-			</div>
+			</>
 		)
 	}
 

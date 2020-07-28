@@ -1,0 +1,42 @@
+#heart-display-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 50vw;
+    min-width: 500px;    
+    padding: 1%;
+}
+
+.heart-wrapper{
+    width: 1vw;
+    height: 1vw;
+    min-width: 20px;
+    min-height: 20px;
+    margin: 2%;
+}
+
+.heart {
+    background-color: #ED553B;
+    transform: rotate(-45deg);
+    width: 1vw;
+    height: 1vw;
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+.heart:before,
+.heart:after {
+  content: "";
+  background-color: #ED553B;
+  border-radius: 50%;
+  position: absolute;
+  width: 1vw;
+  height: 1vw;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.heart:before {
+    top: -10px;
+    left: 0;
+}

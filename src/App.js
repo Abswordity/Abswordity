@@ -12,14 +12,13 @@ const fetchUsers = () => {
 }
 function App() {
   fetchUsers()
-  const sampleWord = ["h", "e", "l", "l"]
   return (
     <div className="App">
       <header className="App-header">
         <p>
           Get ready to embrace your inner Abswordity!
         </p>
-        <GameBoard sampleWord={sampleWord} />
+        <GameBoard />
       </header>
     </div>
   );
