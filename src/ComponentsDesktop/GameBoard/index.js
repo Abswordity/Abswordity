@@ -70,7 +70,7 @@ export class GameBoard extends Component {
 				else {
 					this.pushToDisplayLetters()
 				}
-			}, 100)
+			}, 500)
 		}
 	}
 
