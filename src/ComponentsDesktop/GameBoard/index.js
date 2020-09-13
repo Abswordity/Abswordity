@@ -7,7 +7,7 @@ import dictionaryRegex from '../../DictionaryRegex.js';
 import sounds from '../../sounds';
 import { HeartDisplay } from '../HeartDisplay/index'
 
-const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound } = sounds;
+const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound, gameStartSound } = sounds;
 
 const lettersArray = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 't', 't', 't', 't', 't', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 's', 's', 's', 's', 's', 's', 'l', 'l', 'l', 'l', 'l', 'c', 'c', 'c', 'c', 'c', 'u', 'u', 'u', 'u', 'd', 'd', 'd', 'p', 'p', 'p', 'm', 'm', 'm', 'h', 'h', 'h', 'g', 'g', 'b', 'b', 'f', 'f', 'y', 'y', 'w', 'k', 'v', 'x', 'z', 'j', 'q'];
 
@@ -19,7 +19,8 @@ export class GameBoard extends Component {
 			displayLetters: [],
 			inputWord: '',
 			gameInPlay: false,
-			hearts: 3
+			hearts: 3,
+			gameStartCountdown: null,
 		};
 	}
 
@@ -34,16 +35,18 @@ export class GameBoard extends Component {
 	}
 
 	playButtonClickHandler = () => {
-		this.setState({
-			displayLetters: [],
-			inputWord: '',
-			gameInPlay: true,
-			hearts: 3
-		})
+		this.startCountdown().then(() => {
+			this.setState({
+				displayLetters: [],
+				inputWord: '',
+				gameInPlay: true,
+				hearts: 3
+			})
 
-		setTimeout(() => {
-			this.letterAdditionInterval();
-		}, 0)
+			setTimeout(() => {
+				this.letterAdditionInterval();
+			}, 0)
+		})
 	}
 
 	pushToDisplayLetters = () => {
@@ -64,7 +67,8 @@ export class GameBoard extends Component {
 					gameOverSound()
 					clearInterval(interval)
 					this.setState({
-						gameInPlay: false
+						gameInPlay: false,
+						gameStartCountdown: null,
 					})
 				}
 				else {
@@ -156,8 +160,7 @@ export class GameBoard extends Component {
 				displayLetters: nonHighlightedLetters,
 				inputWord: ''
 			})
-		}
-		else {
+		} else {
 			invalidWordSound()
 		}
 	}
@@ -176,15 +179,35 @@ export class GameBoard extends Component {
 
 	}
 
+	startCountdown = () => {
+		return new Promise((resolve, reject) => {
+			let timerCount = 3;
+			const countdownInterval = setInterval(() => {
+				if (timerCount === 0) {
+					gameStartSound()
+					clearInterval(countdownInterval)
+					resolve('countdown over');
+					return;
+				} else {
+					tileSound()
+					this.setState({
+						gameStartCountdown: timerCount,
+					})
+					timerCount--
+				}
+			}, 1000)
+		})
+	}
+
 	render() {
-		const { displayLetters, gameInPlay, hearts } = this.state;
+		const { displayLetters, gameInPlay, hearts, gameStartCountdown } = this.state;
 		return (
 			<>
 				<div>
 					<HeartDisplay hearts={hearts} />
 					{!gameInPlay &&
 						<div>
-							< PlayButton clickHandler={this.playButtonClickHandler} />
+							< PlayButton gameStartCountdown={gameStartCountdown} clickHandler={this.playButtonClickHandler} />
 						</div>}
 					<div className="game-board">
 						{displayLetters.map((letter, index) => {

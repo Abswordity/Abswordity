@@ -3,7 +3,8 @@
     flex-direction: row;
     justify-content: flex-end;
     width: 50vw;
-    min-width: 500px;    
+    min-width: 500px;
+    min-height: 60px; 
     padding: 1%;
 }
 
@@ -16,7 +17,7 @@
 }
 
 .heart {
-    background-color: #ED553B;
+    background-color: #5eb8b8;
     transform: rotate(-45deg);
     width: 1vw;
     height: 1vw;
@@ -27,7 +28,7 @@
 .heart:before,
 .heart:after {
   content: "";
-  background-color: #ED553B;
+  background-color: #5eb8b8;
   border-radius: 50%;
   position: absolute;
   width: 1vw;

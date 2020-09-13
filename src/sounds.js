@@ -28,6 +28,11 @@ const sounds = {
     const heartSound = new Audio()
     heartSound.src = process.env.PUBLIC_URL + "/sounds/heartSound.mp3"
     heartSound.play()
+  },
+  gameStartSound: () => {
+    const gameStartSound = new Audio()
+    gameStartSound.src = process.env.PUBLIC_URL + "/sounds/gameStartSound.mp3"
+    gameStartSound.play()
   }
 }
 

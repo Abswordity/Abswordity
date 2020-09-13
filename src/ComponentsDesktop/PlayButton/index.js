@@ -1,15 +1,21 @@
-import React from 'react'
-import './index.css'
+import React, { useState } from 'react'
+import './index.styles.css'
 
-export const PlayButton = ({ clickHandler }) => {
-
+export const PlayButton = ({ gameStartCountdown, clickHandler }) => {
+    const [playButtonDisabled, setPlayButtonDisabled] = useState(false)
     return (
         <div id="play-button-container">
-            <button id="play-button" onClick={() => {
-                clickHandler()
-            }} >
-                <div id="play-arrow" />
-            </button>
+            {gameStartCountdown ?
+                <button id="play-button">
+                    {gameStartCountdown}
+                </button>
+                :
+                (<button disabled={playButtonDisabled} id="play-button" onClick={() => {
+                    setPlayButtonDisabled(true);
+                    clickHandler()
+                }} >
+                    <div id="play-arrow" />
+                </button>)}
         </div>
     )
 }
