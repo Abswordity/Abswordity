@@ -5,12 +5,41 @@ import { PlayButton } from '../PlayButton/index';
 import './index.styles.css';
 import dictionaryRegex from '../../DictionaryRegex.js';
 import sounds from '../../sounds';
-import { HeartDisplay } from '../HeartDisplay/index'
+import { HeartDisplay } from '../HeartDisplay/index';
+import { GameScoreDisplay } from '../GameScoreDisplay/index';
 
 const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound, gameStartSound } = sounds;
 
 const lettersArray = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 't', 't', 't', 't', 't', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 's', 's', 's', 's', 's', 's', 'l', 'l', 'l', 'l', 'l', 'c', 'c', 'c', 'c', 'c', 'u', 'u', 'u', 'u', 'd', 'd', 'd', 'p', 'p', 'p', 'm', 'm', 'm', 'h', 'h', 'h', 'g', 'g', 'b', 'b', 'f', 'f', 'y', 'y', 'w', 'k', 'v', 'x', 'z', 'j', 'q'];
 
+const letterScoreObject = {
+	a: 1,
+	b: 2,
+	c: 2,
+	d: 1,
+	e: 1,
+	f: 3,
+	g: 1,
+	h: 3,
+	i: 1,
+	j: 4,
+	k: 3,
+	l: 1,
+	m: 2,
+	n: 1,
+	o: 1,
+	p: 2,
+	q: 5,
+	r: 1,
+	s: 1,
+	t: 1,
+	u: 2,
+	v: 3,
+	w: 3,
+	x: 4,
+	y: 3,
+	z: 5
+}
 export class GameBoard extends Component {
 
 	constructor(props) {
@@ -21,6 +50,8 @@ export class GameBoard extends Component {
 			gameInPlay: false,
 			hearts: 3,
 			gameStartCountdown: null,
+			gameScore: 0,
+			currentWordScore: 0,
 		};
 	}
 
@@ -155,14 +186,47 @@ export class GameBoard extends Component {
 			return !letterObject.selected
 		})
 		if (dictionaryRegex.test(inputWord)) {
+
+			const wordScore = this.addWordScore(inputWord)
 			wordSound()
 			this.setState({
 				displayLetters: nonHighlightedLetters,
-				inputWord: ''
+				inputWord: '',
 			})
+			setTimeout(() => {
+				this.resetWordScore()
+			}, 1000)
 		} else {
 			invalidWordSound()
 		}
+	}
+
+	addWordScore = (word) => {
+		let wordScore = 0;
+		const wordLettersArray = word.split("");
+		const multiplier = this.lengthScoreMultiplier(wordLettersArray);
+
+		wordLettersArray.forEach((letter) => {
+			wordScore += letterScoreObject[letter]
+		})
+		wordScore = Math.round(wordScore * multiplier);
+		this.setState(prevState => {
+			return {
+				...prevState,
+				gameScore: prevState.gameScore += wordScore,
+				currentWordScore: wordScore
+			}
+		})
+
+		return wordScore
+	}
+
+	lengthScoreMultiplier = (wordArray) => {
+		if (wordArray.length > 4) {
+			let multiplier = .1 * wordArray.length
+			return 1 + multiplier
+		}
+		return 1
 	}
 
 	explodeHeart = () => {
@@ -199,12 +263,21 @@ export class GameBoard extends Component {
 		})
 	}
 
+	resetWordScore = () => {
+		this.setState({
+			currentWordScore: 0,
+		})
+	}
+
 	render() {
-		const { displayLetters, gameInPlay, hearts, gameStartCountdown } = this.state;
+		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore } = this.state;
 		return (
 			<>
 				<div>
-					<HeartDisplay hearts={hearts} />
+					<div id="top-bar">
+						<GameScoreDisplay score={gameScore} />
+						<HeartDisplay hearts={hearts} />
+					</div>
 					{!gameInPlay &&
 						<div>
 							< PlayButton gameStartCountdown={gameStartCountdown} clickHandler={this.playButtonClickHandler} />
@@ -214,7 +287,7 @@ export class GameBoard extends Component {
 							return <LetterTile key={index} letter={letter.letter} selected={letter.selected} />
 						})}
 					</div>
-					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={this.state.inputWord} gameInPlay={gameInPlay} />
+					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} />
 				</div>
 			</>
 		)
