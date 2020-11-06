@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { WordScoreDisplay } from '../WordScoreDisplay/index'
+import { PauseButtonDisplay } from '../PauseButtonDisplay/index'
 import './index.styles.css'
 
 
@@ -7,7 +8,7 @@ import './index.styles.css'
 export class Input extends Component {
 
     render() {
-        const { changeHandler, gameInPlay, submitHandler, word, wordScore } = this.props;
+        const { changeHandler, gameInPlay, submitHandler, word, wordScore, paused, startLetterAppending, pauseGame } = this.props;
 
         return (
             <div className="input-field-container">
@@ -16,8 +17,9 @@ export class Input extends Component {
                     submitHandler()
                 }}
                 >
-                    <input spellcheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay} ref={input => input && gameInPlay && input.focus()} />
+                    <input spellcheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay || paused} ref={input => input && gameInPlay && input.focus()} />
                 </form>
+                {gameInPlay && <PauseButtonDisplay clickHandler={paused ? startLetterAppending : pauseGame} paused={paused} />}
                 {!!wordScore && <WordScoreDisplay score={wordScore} />}
             </div>
         )

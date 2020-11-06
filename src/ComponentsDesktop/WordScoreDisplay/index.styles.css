@@ -9,7 +9,8 @@
     padding: 1%;
     -webkit-animation: fadeOut 1s;
     animation: fadeOut 1s;
-    animation-fill-mode: forwards;}
+    animation-fill-mode: forwards;
+}
 
 #score-plus {
     color: #173F5F;
