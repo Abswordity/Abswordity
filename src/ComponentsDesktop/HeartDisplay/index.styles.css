@@ -1,42 +1,41 @@
 #heart-display-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 1%;
-    min-width: 70px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	min-width: 70px;
 }
 
 .heart-wrapper{
-    width: 1vw;
-    height: 1vw;
-    min-width: 20px;
-    min-height: 20px;
-    padding: 15%;
+	width: .5vw;
+	height: .5vw;
+	min-width: 15px;
+	min-height: 15px;
+	padding: 12%;
 }
 
 .heart {
-    background-color: #5eb8b8;
-    transform: rotate(-45deg);
-    width: 1vw;
-    height: 1vw;
-    min-width: 20px;
-    min-height: 20px;
-  }
+	background-color: #5eb8b8;
+	transform: rotate(-45deg);
+	width: .5vw;
+	height: .5vw;
+	min-width: 15px;
+	min-height: 15px;
+}
 
 .heart:before,
 .heart:after {
-  content: "";
-  background-color: #5eb8b8;
-  border-radius: 50%;
-  position: absolute;
-  width: 1vw;
-  height: 1vw;
-  min-width: 20px;
-  min-height: 20px;
+	content: "";
+	background-color: #5eb8b8;
+	border-radius: 50%;
+	position: absolute;
+	width: .5vw;
+	height: .5vw;
+	min-width: 15px;
+	min-height: 15px;
 }
 
 .heart:before {
-    top: -10px;
-    left: 0;
+	top: -8px;
+	left: 0;
 }

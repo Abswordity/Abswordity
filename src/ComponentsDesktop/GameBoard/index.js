@@ -187,7 +187,7 @@ export class GameBoard extends Component {
 		})
 		if (dictionaryRegex.test(inputWord)) {
 
-			const wordScore = this.addWordScore(inputWord)
+			this.addWordScore(inputWord)
 			wordSound()
 			this.setState({
 				displayLetters: nonHighlightedLetters,
