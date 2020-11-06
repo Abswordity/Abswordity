@@ -1,0 +1,55 @@
+#pause-button-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    color: #5eb8b8;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1%;
+}
+
+#pause-button-circle {
+	height: 45px;
+	width: 45px;
+	background-color: transparent;
+	border-radius: 50%;
+	border-width: 2px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;    
+	outline: none;
+	border-color: #5eb8b8;
+	border-style: solid;
+	color: #5eb8b8;
+	font-size: 100px;
+    font-weight: bold;
+}
+
+#pause-button-circle:hover {
+    cursor: pointer
+}
+
+#resume-button-symbol {
+    z-index: 100;
+    width: 0; 
+    height: 0; 
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 25px solid #5eb8b8;
+    margin-left: 10px;
+    background-color: transparent;
+    border-right: 0 solid transparent;
+    outline: none;
+}
+
+
+#pause-button-symbol {
+    z-index: 100;
+    width: 10px; 
+    height: 25px; 
+    border-style: solid;
+    border-width: 10px;
+    border-width: 0px 5px 0px 5px;
+}

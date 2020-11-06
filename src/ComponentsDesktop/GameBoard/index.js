@@ -40,6 +40,9 @@ const letterScoreObject = {
 	y: 3,
 	z: 5
 }
+
+let letterAppendingSetInterval;
+
 export class GameBoard extends Component {
 
 	constructor(props) {
@@ -52,6 +55,8 @@ export class GameBoard extends Component {
 			gameStartCountdown: null,
 			gameScore: 0,
 			currentWordScore: 0,
+			letterAdditionInterval: 200,
+			paused: false,
 		};
 	}
 
@@ -62,7 +67,7 @@ export class GameBoard extends Component {
 	}
 
 	componentWillUnmount = () => {
-		clearInterval(this.letterAdditionInterval);
+		clearInterval(this.startLetterAppending);
 	}
 
 	playButtonClickHandler = () => {
@@ -75,7 +80,7 @@ export class GameBoard extends Component {
 			})
 
 			setTimeout(() => {
-				this.letterAdditionInterval();
+				this.startLetterAppending();
 			}, 0)
 		})
 	}
@@ -88,15 +93,15 @@ export class GameBoard extends Component {
 		this.setState({ displayLetters: newDisplayLetters })
 	}
 
-	letterAdditionInterval = () => {
+	startLetterAppending = () => {
 		const { gameInPlay } = this.state;
 		if (gameInPlay) {
-			const interval = setInterval(() => {
-
+			this.setState({ paused: false })
+			letterAppendingSetInterval = setInterval(() => {
 				const { displayLetters } = this.state;
 				if (displayLetters.length > 59) {
 					gameOverSound()
-					clearInterval(interval)
+					clearInterval(letterAppendingSetInterval)
 					this.setState({
 						gameInPlay: false,
 						gameStartCountdown: null,
@@ -105,7 +110,15 @@ export class GameBoard extends Component {
 				else {
 					this.pushToDisplayLetters()
 				}
-			}, 500)
+			}, this.state.letterAdditionInterval)
+		}
+	}
+
+	pauseGame = () => {
+		const { gameInPlay } = this.state;
+		if (gameInPlay) {
+			this.setState({ paused: true })
+			clearInterval(letterAppendingSetInterval)
 		}
 	}
 
@@ -124,10 +137,10 @@ export class GameBoard extends Component {
 	}
 
 	highlightProperTiles = (word, keyPressed) => {
+		const { displayLetters } = this.state;
 		if (this.validInput(word) || !word.length) {
 			tileSound()
 			const countObject = this.deriveLetterCountObject(word);
-			const { displayLetters } = this.state;
 			const resetDisplayLetters = displayLetters.map((letter) => {
 				return { ...letter, selected: false }
 			})
@@ -142,6 +155,7 @@ export class GameBoard extends Component {
 		} else {
 			if (keyPressed === " ") {
 				this.explodeHeart()
+				this.setState({ inputWord: '' })
 			} else {
 				invalidTileSound()
 			}
@@ -149,14 +163,17 @@ export class GameBoard extends Component {
 	}
 
 	wordInputChangeHandler = (event) => {
-		const { nativeEvent: { data } } = event;
-		const displayLetters = this.highlightProperTiles(event.target.value, data)
+		const { paused } = this.state;
+		if (!paused) {
+			const { nativeEvent: { data } } = event;
+			const displayLetters = this.highlightProperTiles(event.target.value, data)
 
-		if (displayLetters) {
-			this.setState({
-				inputWord: event.target.value,
-				displayLetters: displayLetters
-			})
+			if (displayLetters) {
+				this.setState({
+					inputWord: event.target.value,
+					displayLetters: displayLetters
+				})
+			}
 		}
 	}
 
@@ -217,7 +234,6 @@ export class GameBoard extends Component {
 				currentWordScore: wordScore
 			}
 		})
-
 		return wordScore
 	}
 
@@ -240,7 +256,6 @@ export class GameBoard extends Component {
 				hearts: newHeartCount
 			})
 		}
-
 	}
 
 	startCountdown = () => {
@@ -270,7 +285,7 @@ export class GameBoard extends Component {
 	}
 
 	render() {
-		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore } = this.state;
+		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore, paused } = this.state;
 		return (
 			<>
 				<div>
@@ -280,14 +295,14 @@ export class GameBoard extends Component {
 					</div>
 					{!gameInPlay &&
 						<div>
-							< PlayButton gameStartCountdown={gameStartCountdown} clickHandler={this.playButtonClickHandler} />
+							<PlayButton gameStartCountdown={gameStartCountdown} clickHandler={this.playButtonClickHandler} />
 						</div>}
 					<div className="game-board">
 						{displayLetters.map((letter, index) => {
-							return <LetterTile key={index} letter={letter.letter} selected={letter.selected} />
+							return <LetterTile key={index} letter={letter.letter} selected={letter.selected} paused={paused} />
 						})}
 					</div>
-					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} />
+					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} paused={paused} pauseGame={this.pauseGame} startLetterAppending={this.startLetterAppending} />
 				</div>
 			</>
 		)
