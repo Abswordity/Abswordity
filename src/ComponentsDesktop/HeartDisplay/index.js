@@ -11,6 +11,8 @@ export const HeartDisplay = ({ hearts }) => {
     }
     return (
         <div id="heart-display-container">
-            {renderHearts(hearts)}
+            <div id="hearts-inner-container">
+                {renderHearts(hearts)}
+            </div>
         </div>)
 }
