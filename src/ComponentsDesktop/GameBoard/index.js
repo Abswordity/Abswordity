@@ -7,6 +7,7 @@ import dictionaryRegex from '../../DictionaryRegex.js';
 import sounds from '../../sounds';
 import { HeartDisplay } from '../HeartDisplay/index';
 import { GameScoreDisplay } from '../GameScoreDisplay/index';
+import { GameClock } from '../GameClock/index'
 
 const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound, gameStartSound } = sounds;
 
@@ -55,7 +56,7 @@ export class GameBoard extends Component {
 			gameStartCountdown: null,
 			gameScore: 0,
 			currentWordScore: 0,
-			letterAdditionInterval: 200,
+			letterAdditionInterval: 500,
 			paused: false,
 		};
 	}
@@ -76,7 +77,8 @@ export class GameBoard extends Component {
 				displayLetters: [],
 				inputWord: '',
 				gameInPlay: true,
-				hearts: 3
+				hearts: 3,
+				gameScore: 0,
 			})
 
 			setTimeout(() => {
@@ -290,6 +292,7 @@ export class GameBoard extends Component {
 			<>
 				<div>
 					<div id="top-bar">
+						<GameClock gameInPlay={gameInPlay} paused={paused} />
 						<GameScoreDisplay score={gameScore} />
 						<HeartDisplay hearts={hearts} />
 					</div>

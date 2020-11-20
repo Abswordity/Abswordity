@@ -3,6 +3,14 @@
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: center;
+	flex: 1;
+}
+
+#hearts-inner-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
 	min-width: 70px;
 }
 
