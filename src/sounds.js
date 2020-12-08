@@ -33,6 +33,11 @@ const sounds = {
     const gameStartSound = new Audio()
     gameStartSound.src = process.env.PUBLIC_URL + "/sounds/gameStartSound.mp3"
     gameStartSound.play()
+  },
+  levelUpSound: () => {
+    const levelUpSound = new Audio()
+    levelUpSound.src = process.env.PUBLIC_URL + "/sounds/levelUpSound.mp3"
+    levelUpSound.play()
   }
 }
 

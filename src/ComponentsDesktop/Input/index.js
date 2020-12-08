@@ -8,7 +8,7 @@ import './index.styles.css'
 export class Input extends Component {
 
     render() {
-        const { changeHandler, gameInPlay, submitHandler, word, wordScore, paused, startLetterAppending, pauseGame } = this.props;
+        const { changeHandler, gameInPlay, submitHandler, word, wordScore, paused, startLetterAppending, pauseGame, levelingUp } = this.props;
 
         return (
             <div className="input-field-container">
@@ -17,9 +17,9 @@ export class Input extends Component {
                     submitHandler()
                 }}
                 >
-                    <input spellcheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay || paused} ref={input => input && gameInPlay && input.focus()} />
+                    <input spellCheck="false" value={word} onChange={changeHandler} className="input-field" disabled={!gameInPlay || paused} ref={input => input && gameInPlay && input.focus()} />
                 </form>
-                {gameInPlay && <PauseButtonDisplay clickHandler={paused ? startLetterAppending : pauseGame} paused={paused} />}
+                {gameInPlay && !levelingUp && < PauseButtonDisplay clickHandler={paused ? startLetterAppending : pauseGame} paused={paused} />}
                 {!!wordScore && <WordScoreDisplay score={wordScore} />}
             </div>
         )

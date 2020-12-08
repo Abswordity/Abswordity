@@ -37,3 +37,17 @@
     transform: rotate(360deg);
   }
 }
+
+h2 {
+  font-size: 36px;
+  color: #173F5F;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #173F5F;
+}
