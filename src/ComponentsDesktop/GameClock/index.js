@@ -16,24 +16,32 @@ export class GameClock extends Component {
 
 
     componentDidUpdate = (prevProps, prevState) => {
-        const { paused, gameInPlay } = this.props;
-        const { counting } = this.state;
+        const { paused, gameInPlay, levelUp } = this.props;
+        const { counting, timeInSeconds } = this.state;
         const { paused: prevPausedStatus, gameInPlay: prevGameInPlayStatus } = prevProps
+        const { timeInSeconds: prevTimeInSeconds } = prevState
+        // when game is paused or game ends
         if ((!prevPausedStatus && paused) || (prevGameInPlayStatus && !gameInPlay)) {
             clearInterval(gameClockSetInterval);
             this.setState({
                 counting: false
             })
         }
-        if (!counting && !prevGameInPlayStatus && gameInPlay) {
+        // after the game ends and you start a new game
+        else if (!counting && !prevGameInPlayStatus && gameInPlay) {
             this.setState({ timeInSeconds: 0 })
             this.startGameClock();
         }
-        if (!counting && prevPausedStatus && !paused) {
+        // when game goes from paused to unpaused 
+        else if (!counting && prevPausedStatus && !paused) {
             this.startGameClock();
         }
-
+        // when a user levels up - prevents levelUp from getting called multiple times accidentally
+        else if (timeInSeconds && timeInSeconds !== prevTimeInSeconds && timeInSeconds % 90 === 0) {
+            levelUp()
+        }
     }
+
 
     startGameClock = () => {
         gameClockSetInterval = setInterval(() => {

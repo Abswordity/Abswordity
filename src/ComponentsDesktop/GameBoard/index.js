@@ -8,8 +8,9 @@ import sounds from '../../sounds';
 import { HeartDisplay } from '../HeartDisplay/index';
 import { GameScoreDisplay } from '../GameScoreDisplay/index';
 import { GameClock } from '../GameClock/index'
+import { LevelUpModal } from '../LevelUpModal/index'
 
-const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound, gameStartSound } = sounds;
+const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound, gameStartSound, levelUpSound } = sounds;
 
 const lettersArray = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 't', 't', 't', 't', 't', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 's', 's', 's', 's', 's', 's', 'l', 'l', 'l', 'l', 'l', 'c', 'c', 'c', 'c', 'c', 'u', 'u', 'u', 'u', 'd', 'd', 'd', 'p', 'p', 'p', 'm', 'm', 'm', 'h', 'h', 'h', 'g', 'g', 'b', 'b', 'f', 'f', 'y', 'y', 'w', 'k', 'v', 'x', 'z', 'j', 'q'];
 
@@ -56,8 +57,10 @@ export class GameBoard extends Component {
 			gameStartCountdown: null,
 			gameScore: 0,
 			currentWordScore: 0,
-			letterAdditionInterval: 500,
+			letterAdditionInterval: 1000,
 			paused: false,
+			currentLevel: 1,
+			levelingUp: false
 		};
 	}
 
@@ -98,7 +101,10 @@ export class GameBoard extends Component {
 	startLetterAppending = () => {
 		const { gameInPlay } = this.state;
 		if (gameInPlay) {
-			this.setState({ paused: false })
+			this.setState({
+				paused: false,
+				levelingUp: false
+			})
 			letterAppendingSetInterval = setInterval(() => {
 				const { displayLetters } = this.state;
 				if (displayLetters.length > 59) {
@@ -286,13 +292,29 @@ export class GameBoard extends Component {
 		})
 	}
 
+	levelUp = async () => {
+		// pause the game, increase the speed, increment the level, show popup, clear board and unpause game
+		await this.pauseGame()
+		await this.setState(prevState => {
+			return {
+				...prevState,
+				currentLevel: prevState.currentLevel + 1,
+				letterAdditionInterval: (prevState.letterAdditionInterval) / 1.2,
+				displayLetters: [],
+				inputWord: '',
+				levelingUp: true
+			}
+		})
+		levelUpSound()
+	}
+
 	render() {
-		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore, paused } = this.state;
+		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore, paused, levelingUp, currentLevel } = this.state;
 		return (
 			<>
 				<div>
 					<div id="top-bar">
-						<GameClock gameInPlay={gameInPlay} paused={paused} />
+						<GameClock gameInPlay={gameInPlay} paused={paused} levelUp={this.levelUp} />
 						<GameScoreDisplay score={gameScore} />
 						<HeartDisplay hearts={hearts} />
 					</div>
@@ -300,12 +322,13 @@ export class GameBoard extends Component {
 						<div>
 							<PlayButton gameStartCountdown={gameStartCountdown} clickHandler={this.playButtonClickHandler} />
 						</div>}
+					{levelingUp && <LevelUpModal level={currentLevel} startLetterAppending={this.startLetterAppending} />}
 					<div className="game-board">
 						{displayLetters.map((letter, index) => {
 							return <LetterTile key={index} letter={letter.letter} selected={letter.selected} paused={paused} />
 						})}
 					</div>
-					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} paused={paused} pauseGame={this.pauseGame} startLetterAppending={this.startLetterAppending} />
+					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} paused={paused} pauseGame={this.pauseGame} startLetterAppending={this.startLetterAppending} levelingUp={levelingUp} />
 				</div>
 			</>
 		)
