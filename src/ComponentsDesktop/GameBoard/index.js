@@ -60,7 +60,8 @@ export class GameBoard extends Component {
 			letterAdditionInterval: 1000,
 			paused: false,
 			currentLevel: 1,
-			levelingUp: false
+			levelingUp: false,
+			gameWordArray: []
 		};
 	}
 
@@ -108,18 +109,44 @@ export class GameBoard extends Component {
 			letterAppendingSetInterval = setInterval(() => {
 				const { displayLetters } = this.state;
 				if (displayLetters.length > 59) {
-					gameOverSound()
-					clearInterval(letterAppendingSetInterval)
-					this.setState({
-						gameInPlay: false,
-						gameStartCountdown: null,
-					})
+					this.endGame();
 				}
 				else {
 					this.pushToDisplayLetters()
 				}
 			}, this.state.letterAdditionInterval)
 		}
+	}
+
+	postScore = () => {
+		const { gameWordArray, gameScore } = this.state;
+		fetch('http://localhost:1000/users', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				username: "tali.scheer@gmail.com",
+				gameWordArray,
+				gameScore
+			})
+		}).then(res => {
+			console.log({ res })
+		}).catch(err => console.log({ err }))
+	}
+
+	endGame = () => {
+		gameOverSound()
+		clearInterval(letterAppendingSetInterval)
+		this.postScore();
+		this.setState({
+			gameInPlay: false,
+			gameStartCountdown: null,
+			letterAdditionInterval: 1000,
+			currentLevel: 1,
+			gameWordArray: []
+		})
 	}
 
 	pauseGame = () => {
@@ -206,18 +233,26 @@ export class GameBoard extends Component {
 	}
 
 	wordInputSubmitHandler = () => {
-		const { displayLetters, inputWord } = this.state;
+		const { displayLetters, inputWord, gameWordArray, gameScore } = this.state;
+
 		const nonHighlightedLetters = displayLetters.filter((letterObject) => {
 			return !letterObject.selected
 		})
 		if (dictionaryRegex.test(inputWord)) {
-
-			this.addWordScore(inputWord)
+			const wordScore = this.addWordScore(inputWord)
+			const wordObj = { word: inputWord, score: wordScore }
+			const newGameWordArray = [...gameWordArray, wordObj]
+			const updatedGameScore = gameScore + wordScore
 			wordSound()
-			this.setState({
-				displayLetters: nonHighlightedLetters,
-				inputWord: '',
-			})
+			this.setState(
+				{
+					gameWordArray: newGameWordArray,
+					displayLetters: nonHighlightedLetters,
+					inputWord: '',
+					gameScore: updatedGameScore,
+					currentWordScore: wordScore
+				}
+			)
 			setTimeout(() => {
 				this.resetWordScore()
 			}, 1000)
@@ -235,13 +270,6 @@ export class GameBoard extends Component {
 			wordScore += letterScoreObject[letter]
 		})
 		wordScore = Math.round(wordScore * multiplier);
-		this.setState(prevState => {
-			return {
-				...prevState,
-				gameScore: prevState.gameScore += wordScore,
-				currentWordScore: wordScore
-			}
-		})
 		return wordScore
 	}
 
