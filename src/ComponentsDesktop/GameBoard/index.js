@@ -117,9 +117,26 @@ export class GameBoard extends Component {
 			}, this.state.letterAdditionInterval)
 		}
 	}
+	
+	sortLongestWords = (gameWordArray) => {
+		return gameWordArray.sort((a,b)=> {
+			return b.word.length - a.word.length
+		}).slice(0,5).map((wordObj) => {
+			return wordObj.word;
+		});
+	}
+
+	sortHighestScoringWords = (gameWordArray) => {
+		return gameWordArray.sort((a,b)=> {
+			return b.score - a.score
+		}).slice(0,5)
+	}
 
 	postScore = () => {
 		const { gameWordArray, gameScore } = this.state;
+		const longestWordsArray = this.sortLongestWords(gameWordArray)
+		const highestScoringWordsArray = this.sortHighestScoringWords(gameWordArray)
+
 		fetch('http://localhost:1000/users', {
 			method: 'POST',
 			headers: {
@@ -128,7 +145,8 @@ export class GameBoard extends Component {
 			},
 			body: JSON.stringify({
 				username: "tali.scheer@gmail.com",
-				gameWordArray,
+				longestWordsArray,
+				highestScoringWordsArray,
 				gameScore
 			})
 		}).then(res => {
