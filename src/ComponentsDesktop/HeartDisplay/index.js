@@ -5,14 +5,12 @@ export const HeartDisplay = ({ hearts }) => {
     const renderHearts = (bombCount) => {
         const hearts = []
         for (let i = 0; i < bombCount; i++) {
-            hearts.push(<div className="heart-wrapper"><div className="heart" /></div>)
+            hearts.push(<i class="heartbeat icon"></i>)
         }
         return hearts;
     }
     return (
         <div id="heart-display-container">
-            <div id="hearts-inner-container">
-                {renderHearts(hearts)}
-            </div>
+            {renderHearts(hearts)}
         </div>)
 }

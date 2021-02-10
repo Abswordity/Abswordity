@@ -4,7 +4,36 @@
 	justify-content: space-between;
 	width: 50vw;
 	min-width: 500px;
-	padding: 1%;
+	padding: 2%;
+	background-color: #f9f9f9;
+	border-top-left-radius:1vw;
+	border-top-right-radius:1vw;
+
+}
+
+.volume {
+	color: #173F5F;
+}
+
+.pause, .play{ 
+	color: #173F5F;
+}
+
+#level-display {
+	color:  #173F5F;
+	display: inline;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+#settings-nav{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	padding-left: 1%;
+	padding-right: 1%;
+	padding-bottom: 1%;
 }
 
 .game-board{
@@ -17,5 +46,6 @@
 	height: 30vw;
 	background-color: #f9f9f9;
 	padding: 1%;
-	border-radius: 1vw;
+	border-bottom-left-radius: 1vw;
+	border-bottom-right-radius: 1vw;
 }

@@ -1,10 +1,9 @@
 #word-score {
     position: absolute;
     right: 0;
-    top: 0;
     display: block;
     color: #ED553B;
-    font-size: 50px;
+    font-size: 40px;
     font-weight: bold;
     padding: 1%;
     -webkit-animation: fadeOut 1s;

@@ -2,48 +2,10 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
-	align-items: center;
 	flex: 1;
 }
 
-#hearts-inner-container {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-	align-items: center;
-	min-width: 70px;
-}
-
-.heart-wrapper{
-	width: .5vw;
-	height: .5vw;
-	min-width: 15px;
-	min-height: 15px;
-	padding: 12%;
-}
-
-.heart {
-	background-color: #5eb8b8;
-	transform: rotate(-45deg);
-	width: .5vw;
-	height: .5vw;
-	min-width: 15px;
-	min-height: 15px;
-}
-
-.heart:before,
-.heart:after {
-	content: "";
-	background-color: #5eb8b8;
-	border-radius: 50%;
-	position: absolute;
-	width: .5vw;
-	height: .5vw;
-	min-width: 15px;
-	min-height: 15px;
-}
-
-.heart:before {
-	top: -8px;
-	left: 0;
+.heartbeat {
+	color: #5eb8b8;
+	margin: 0;
 }

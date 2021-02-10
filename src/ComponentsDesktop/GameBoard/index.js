@@ -7,8 +7,11 @@ import dictionaryRegex from '../../DictionaryRegex.js';
 import sounds from '../../sounds';
 import { HeartDisplay } from '../HeartDisplay/index';
 import { GameScoreDisplay } from '../GameScoreDisplay/index';
-import { GameClock } from '../GameClock/index'
-import { LevelUpModal } from '../LevelUpModal/index'
+import { GameClock } from '../GameClock/index';
+import { LevelUpModal } from '../LevelUpModal/index';
+import { playSound } from '../../utils/soundsHelper'
+import { PauseButtonDisplay } from '../PauseButtonDisplay/index'
+
 
 const { tileSound, invalidTileSound, wordSound, invalidWordSound, gameOverSound, heartSound, gameStartSound, levelUpSound } = sounds;
 
@@ -61,7 +64,8 @@ export class GameBoard extends Component {
 			paused: false,
 			currentLevel: 1,
 			levelingUp: false,
-			gameWordArray: []
+			gameWordArray: [],
+			isMuted: false
 		};
 	}
 
@@ -155,7 +159,8 @@ export class GameBoard extends Component {
 	}
 
 	endGame = () => {
-		gameOverSound()
+		const { isMuted } = this.state;
+		playSound(isMuted, gameOverSound);
 		clearInterval(letterAppendingSetInterval)
 		this.postScore();
 		this.setState({
@@ -190,9 +195,9 @@ export class GameBoard extends Component {
 	}
 
 	highlightProperTiles = (word, keyPressed) => {
-		const { displayLetters } = this.state;
+		const { displayLetters, isMuted } = this.state;
 		if (this.validInput(word) || !word.length) {
-			tileSound()
+			playSound(isMuted, tileSound);
 			const countObject = this.deriveLetterCountObject(word);
 			const resetDisplayLetters = displayLetters.map((letter) => {
 				return { ...letter, selected: false }
@@ -210,7 +215,7 @@ export class GameBoard extends Component {
 				this.explodeHeart()
 				this.setState({ inputWord: '' })
 			} else {
-				invalidTileSound()
+				playSound(isMuted, invalidTileSound);
 			}
 		}
 	}
@@ -251,7 +256,7 @@ export class GameBoard extends Component {
 	}
 
 	wordInputSubmitHandler = () => {
-		const { displayLetters, inputWord, gameWordArray, gameScore } = this.state;
+		const { displayLetters, inputWord, gameWordArray, gameScore, isMuted } = this.state;
 
 		const nonHighlightedLetters = displayLetters.filter((letterObject) => {
 			return !letterObject.selected
@@ -261,7 +266,7 @@ export class GameBoard extends Component {
 			const wordObj = { word: inputWord, score: wordScore }
 			const newGameWordArray = [...gameWordArray, wordObj]
 			const updatedGameScore = gameScore + wordScore
-			wordSound()
+			playSound(isMuted, wordSound);
 			this.setState(
 				{
 					gameWordArray: newGameWordArray,
@@ -275,7 +280,7 @@ export class GameBoard extends Component {
 				this.resetWordScore()
 			}, 1000)
 		} else {
-			invalidWordSound()
+			playSound(isMuted, invalidWordSound);
 		}
 	}
 
@@ -300,9 +305,9 @@ export class GameBoard extends Component {
 	}
 
 	explodeHeart = () => {
-		const { gameInPlay, hearts } = this.state;
+		const { gameInPlay, hearts, isMuted } = this.state;
 		if (gameInPlay && hearts) {
-			heartSound()
+			playSound(isMuted, heartSound);
 			let newHeartCount = hearts - 1
 
 			this.setState({
@@ -313,16 +318,17 @@ export class GameBoard extends Component {
 	}
 
 	startCountdown = () => {
+		const { isMuted } = this.state;
 		return new Promise((resolve, reject) => {
 			let timerCount = 3;
 			const countdownInterval = setInterval(() => {
 				if (timerCount === 0) {
-					gameStartSound()
+					playSound(isMuted, gameStartSound);
 					clearInterval(countdownInterval)
 					resolve('countdown over');
 					return;
 				} else {
-					tileSound()
+					playSound(isMuted, tileSound);
 					this.setState({
 						gameStartCountdown: timerCount,
 					})
@@ -339,6 +345,7 @@ export class GameBoard extends Component {
 	}
 
 	levelUp = async () => {
+		const {isMuted} = this.state;
 		// pause the game, increase the speed, increment the level, show popup, clear board and unpause game
 		await this.pauseGame()
 		await this.setState(prevState => {
@@ -351,14 +358,33 @@ export class GameBoard extends Component {
 				levelingUp: true
 			}
 		})
-		levelUpSound()
+		playSound(isMuted, levelUpSound);
+	}
+
+	toggleMuted = () => {
+		this.setState(prevState => {
+			return {
+				isMuted: !prevState.isMuted
+			}
+		})
 	}
 
 	render() {
-		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore, paused, levelingUp, currentLevel } = this.state;
+		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore, paused, levelingUp, currentLevel, isMuted } = this.state;
 		return (
 			<>
 				<div>
+					<div id="settings-nav">
+						<div onClick={this.toggleMuted}>
+						{isMuted ? <i class="volume off icon"/> : <i class="volume down icon"/>  }
+						</div>
+						<div>
+						{gameInPlay && !levelingUp && < PauseButtonDisplay clickHandler={paused ? this.startLetterAppending : this.pauseGame} paused={paused} />}
+						</div>
+						<div>
+						{gameInPlay && <p id="level-display">Level {currentLevel}</p>}
+						</div>
+					</div>
 					<div id="top-bar">
 						<GameClock gameInPlay={gameInPlay} paused={paused} levelUp={this.levelUp} />
 						<GameScoreDisplay score={gameScore} />
@@ -374,7 +400,7 @@ export class GameBoard extends Component {
 							return <LetterTile key={index} letter={letter.letter} selected={letter.selected} paused={paused} />
 						})}
 					</div>
-					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} paused={paused} pauseGame={this.pauseGame} startLetterAppending={this.startLetterAppending} levelingUp={levelingUp} />
+					<Input changeHandler={(e) => this.wordInputChangeHandler(e)} submitHandler={this.wordInputSubmitHandler} word={inputWord} gameInPlay={gameInPlay} wordScore={currentWordScore} paused={paused}/>
 				</div>
 			</>
 		)
