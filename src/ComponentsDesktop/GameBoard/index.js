@@ -375,14 +375,16 @@ export class GameBoard extends Component {
 			<>
 				<div>
 					<div id="settings-nav">
-						<div onClick={this.toggleMuted}>
-						{isMuted ? <i class="volume off icon"/> : <i class="volume down icon"/>  }
-						</div>
 						<div>
-						{gameInPlay && !levelingUp && < PauseButtonDisplay clickHandler={paused ? this.startLetterAppending : this.pauseGame} paused={paused} />}
+							{gameInPlay && <p id="level-display">Level {currentLevel}</p>}
 						</div>
-						<div>
-						{gameInPlay && <p id="level-display">Level {currentLevel}</p>}
+						<div id="sound-pause-container">
+							<div>
+								{gameInPlay && !levelingUp && <PauseButtonDisplay clickHandler={paused ? this.startLetterAppending : this.pauseGame} paused={paused} />}
+							</div>
+							<div onClick={this.toggleMuted}>
+								{isMuted ? <i class="volume off icon"/> : <i class="volume down icon"/>  }
+							</div>		
 						</div>
 					</div>
 					<div id="top-bar">
