@@ -1,7 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
 import { GameBoardInitializer } from './ComponentsDesktop/GameBoardInitializer/index'
-import { LoadingScreen } from './ComponentsDesktop/LoadingScreen/index'
 import './App.css';
 
 const fetchUsers = () => {
