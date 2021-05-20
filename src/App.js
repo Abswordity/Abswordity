@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
-import { GameBoard } from './ComponentsDesktop/GameBoard/index'
+import { GameBoardInitializer } from './ComponentsDesktop/GameBoardInitializer/index'
+import { LoadingScreen } from './ComponentsDesktop/LoadingScreen/index'
 import './App.css';
 
 const fetchUsers = () => {
@@ -10,15 +11,15 @@ const fetchUsers = () => {
       console.log({ users })
     })
 }
+
 function App() {
   fetchUsers()
+
+  console.log("APP.js LOADED")
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Get ready to embrace your inner Abswordity!
-        </p>
-        <GameBoard />
+        <GameBoardInitializer/> 
       </header>
     </div>
   );

@@ -69,12 +69,6 @@ export class GameBoard extends Component {
 		};
 	}
 
-	componentDidMount = () => {
-		dictionaryRegex.test('yeet')
-		dictionaryRegex.test('play')
-		dictionaryRegex.test('ball')
-	}
-
 	componentWillUnmount = () => {
 		clearInterval(this.startLetterAppending);
 	}
@@ -361,6 +355,12 @@ export class GameBoard extends Component {
 		playSound(isMuted, levelUpSound);
 	}
 
+	// initializeDictionary = async () => {
+	// 	await dictionaryRegex.test('yeet')
+	// 	await dictionaryRegex.test('play')
+	// 	await dictionaryRegex.test('ball')
+	// }
+
 	toggleMuted = () => {
 		this.setState(prevState => {
 			return {
@@ -370,6 +370,7 @@ export class GameBoard extends Component {
 	}
 
 	render() {
+		console.log("RENDER")
 		const { displayLetters, gameInPlay, hearts, gameStartCountdown, gameScore, inputWord, currentWordScore, paused, levelingUp, currentLevel, isMuted } = this.state;
 		return (
 			<>
